@@ -50,7 +50,8 @@ export async function LogoutUser(refreshToken) {
         throw errorData;
       }
     } catch (error) {
-      console.log(error);
+      console.log(`Error logging out: ${error}`);
+      throw error;
     }
   };
   return await handleLogout();
