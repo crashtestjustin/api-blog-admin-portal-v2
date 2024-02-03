@@ -12,7 +12,7 @@ function About() {
   return (
     <>
       {isLoggedIn ? (
-        <p>Posts go here</p>
+        <p>About editor go here</p>
       ) : (
         <>
           <p>About Editor unnaccessible while logged out.</p>
