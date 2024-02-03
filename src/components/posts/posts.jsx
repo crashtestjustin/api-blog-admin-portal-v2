@@ -5,8 +5,6 @@ import { Home } from "../home/home";
 function Posts() {
   const { isLoggedIn, setIsLoggedIn } = useContext(OutletContext);
 
-  const pageState = "modify posts";
-
   useEffect(() => {
     console.log(isLoggedIn);
   }, []);
