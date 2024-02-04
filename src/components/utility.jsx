@@ -11,67 +11,110 @@ const timefromNow = (adjustment) => {
 };
 
 export const LoginSubmit = async (email, password) => {
-  const response = await LoginLocal(email, password);
+  try {
+    const response = await LoginLocal(email, password);
 
-  const { token, refreshToken } = response;
+    const { token, refreshToken } = response;
 
-  if (token || refreshToken) {
-    Cookies.set("accessToken", token, { expires: timefromNow(600) });
-    Cookies.set("refreshToken", refreshToken, {
-      expires: timefromNow(7200),
-    });
-    return true;
+    if (token || refreshToken) {
+      // Cookies.set("accessToken", token, { expires: timefromNow(600) });
+      // Cookies.set("refreshToken", refreshToken, {
+      //   expires: timefromNow(7200),
+      // });
+      Cookies.set("accessToken", token, { expires: timefromNow(15) });
+      Cookies.set("refreshToken", refreshToken, {
+        expires: timefromNow(60),
+      });
+      return true;
+    }
+  } catch (error) {
+    console.error("Login Failed: ", error);
+    throw error;
   }
 
-  throw new Error(); // Throw the error to be caught by the calling code
+  throw new Error("Invalid response from server");
 };
 
 export const LogoutSubmit = async () => {
+  console.log("logout user activated");
   try {
     const refreshToken = Cookies.get("refreshToken");
-    await LogoutUser(refreshToken);
+    const result = await LogoutUser(refreshToken);
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
+    return result;
   } catch (error) {
-    return error;
+    console.error("Logout failed:", error);
+    throw error; // Propagate the error
   }
 };
 
-const isAccessTokenExpired = () => {
-  const accessToken = Cookies.get("accessToken");
+const checkRefreshTokenStatus = async () => {
+  const refreshToken = Cookies.get("refreshToken");
+  console.log("Refresh Token:", refreshToken);
 
-  if (accessToken === undefined) {
-    Cookies.remove("accessToken");
-    return undefined;
+  if (!refreshToken) {
+    console.log("no refresh token found");
+    return false;
   }
 
-  const decodedToken = jwtDecode(accessToken);
-  const accessTokenExpiration = decodedToken.exp;
+  const decodedrefreshToken = jwtDecode(refreshToken);
+  const refreshTokenExpiration = decodedrefreshToken.exp;
   const currentTime = Math.floor(Date.now() / 1000);
 
-  if (currentTime >= accessTokenExpiration) {
-    Cookies.remove("accessToken");
-    return true;
+  if (refreshTokenExpiration >= currentTime) {
+    const result = await LogoutSubmit();
+    return result;
   }
-  return false;
+  return true;
 };
 
 export const checkAccessTokenStatus = async () => {
-  try {
-    const checkResult = isAccessTokenExpired();
-    if (checkResult) {
-      console.log("access token expired. Obtainig a new one");
+  const accessToken = Cookies.get("accessToken");
+  console.log("Access token: ", accessToken);
+
+  if (!accessToken) {
+    console.log("no access token found");
+    const refreshCheck = await checkRefreshTokenStatus();
+    if (refreshCheck) {
+      try {
+        const refreshedAccessToken = await refreshAccessToken();
+        Cookies.set("accessToken", refreshedAccessToken.token, {
+          expires: timefromNow(15),
+        });
+        console.log("access token refreshed");
+        console.log(refreshedAccessToken.token);
+        return true;
+      } catch (error) {
+        console.error("Error refreshing access token: ", error);
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  const decodedAccessToken = jwtDecode(accessToken);
+
+  const accessTokenExpiration = decodedAccessToken.exp;
+  const currentTime = Math.floor(Date.now() / 1000);
+
+  if (currentTime >= accessTokenExpiration) {
+    console.log("access token expired. Obtainig a new one");
+    try {
       const refreshedAccessToken = await refreshAccessToken();
       Cookies.set("accessToken", refreshedAccessToken.token, {
-        expires: timefromNow(600),
+        expires: timefromNow(15),
       });
-      console.log(`token refreshed....`);
-    } else if (checkResult === undefined) {
-      console.log("No access token");
-    } else {
-      console.log("access token is OK for now.");
+      console.log("access token refreshed");
+      console.log(refreshedAccessToken.token);
+      return true;
+    } catch (error) {
+      console.error("Error refreshing access token: ", error);
+      return false;
     }
-  } catch (error) {
-    console.error(`Error refreshing access token: ${error.message}`);
+  } else {
+    console.log("access token is OK for now");
+    return true;
   }
 };
