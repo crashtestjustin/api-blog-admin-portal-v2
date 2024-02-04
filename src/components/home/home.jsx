@@ -10,6 +10,15 @@ export const Home = () => {
   const { isLoggedIn, setIsLoggedIn } = useContext(OutletContext);
 
   useEffect(() => {
+    const checkTokenStatus = async () => {
+      const status = await checkAccessTokenStatus();
+      console.log("token status: ", status);
+      status === false ? setIsLoggedIn(status) : setIsLoggedIn(true);
+    };
+    checkTokenStatus();
+  }, []);
+
+  useEffect(() => {
     setLoginData({
       email: "",
       password: "",
