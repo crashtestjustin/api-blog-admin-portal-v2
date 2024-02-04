@@ -58,23 +58,28 @@ export async function LogoutUser(refreshToken) {
 }
 
 export const refreshAccessToken = async () => {
-  const requestBody = {
-    token: Cookies.get("refreshToken"),
-  };
+  try {
+    const requestBody = {
+      token: Cookies.get("refreshToken"),
+    };
 
-  const response = await fetch("http://localhost:3000/users/token", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestBody),
-  });
+    const response = await fetch("http://localhost:3000/users/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
 
-  if (response.ok) {
-    const data = await response.json();
-    return data;
-  } else {
-    const errorData = await response.json();
-    throw new Error(errorData.error);
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.error);
+    }
+  } catch (error) {
+    console.error("Error refreshing the access token: ", error);
+    throw error;
   }
 };
