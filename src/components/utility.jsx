@@ -19,7 +19,6 @@ export const LoginSubmit = async (email, password) => {
     if (token || refreshToken) {
       Cookies.set("accessToken", token, { expires: timefromNow(600) });
 
-      //   Cookies.set("accessToken", token, { expires: timefromNow(15) });
       Cookies.set("refreshToken", refreshToken);
       return true;
     }
