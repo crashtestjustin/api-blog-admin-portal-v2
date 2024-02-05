@@ -95,3 +95,15 @@ export const getAllPosts = async () => {
     throw error;
   }
 };
+
+export const SinglePostGet = async (id) => {
+  console.log("Param id: ", id);
+  try {
+    const searchUrl = `http://localhost:3000/${id}`;
+    const response = await fetch(searchUrl);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(`Error fetching data for single post: ${error}`);
+  }
+};
