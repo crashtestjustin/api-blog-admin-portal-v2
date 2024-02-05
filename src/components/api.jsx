@@ -78,3 +78,20 @@ export const refreshAccessToken = async () => {
     throw new Error(errorData.error);
   }
 };
+
+export const getAllPosts = async () => {
+  try {
+    const response = await fetch("http://localhost:3000/");
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const errorData = await response.json();
+      return errorData;
+    }
+  } catch (error) {
+    console.log("Error getting all posts: ", error);
+    throw error;
+  }
+};
