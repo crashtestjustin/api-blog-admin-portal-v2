@@ -17,14 +17,10 @@ export const LoginSubmit = async (email, password) => {
     const { token, refreshToken } = response;
 
     if (token || refreshToken) {
-      // Cookies.set("accessToken", token, { expires: timefromNow(600) });
-      // Cookies.set("refreshToken", refreshToken, {
-      //   expires: timefromNow(7200),
-      // });
-      Cookies.set("accessToken", token, { expires: timefromNow(15) });
-      Cookies.set("refreshToken", refreshToken, {
-        expires: timefromNow(60),
-      });
+      Cookies.set("accessToken", token, { expires: timefromNow(600) });
+
+      //   Cookies.set("accessToken", token, { expires: timefromNow(15) });
+      Cookies.set("refreshToken", refreshToken);
       return true;
     }
   } catch (error) {
@@ -51,10 +47,10 @@ export const LogoutSubmit = async () => {
 
 const checkRefreshTokenStatus = async () => {
   const refreshToken = Cookies.get("refreshToken");
-  console.log("Refresh Token:", refreshToken);
+  //   console.log("Refresh Token:", refreshToken);
 
   if (!refreshToken) {
-    console.log("no refresh token found");
+    // console.log("no refresh token found");
     return false;
   }
 
@@ -71,10 +67,10 @@ const checkRefreshTokenStatus = async () => {
 
 export const checkAccessTokenStatus = async () => {
   const accessToken = Cookies.get("accessToken");
-  console.log("Access token: ", accessToken);
+  //   console.log("Access token: ", accessToken);
 
   if (!accessToken) {
-    console.log("no access token found");
+    // console.log("no access token found");
     const refreshCheck = await checkRefreshTokenStatus();
     if (refreshCheck) {
       try {
@@ -86,7 +82,8 @@ export const checkAccessTokenStatus = async () => {
         console.log(refreshedAccessToken.token);
         return true;
       } catch (error) {
-        console.error("Error refreshing access token: ", error);
+        console.error("error refreshing access token: ", error);
+        Cookies.remove("refreshToken");
         return false;
       }
     } else {
@@ -100,13 +97,11 @@ export const checkAccessTokenStatus = async () => {
   const currentTime = Math.floor(Date.now() / 1000);
 
   if (currentTime >= accessTokenExpiration) {
-    console.log("access token expired. Obtainig a new one");
     try {
       const refreshedAccessToken = await refreshAccessToken();
       Cookies.set("accessToken", refreshedAccessToken.token, {
         expires: timefromNow(15),
       });
-      console.log("access token refreshed");
       console.log(refreshedAccessToken.token);
       return true;
     } catch (error) {
