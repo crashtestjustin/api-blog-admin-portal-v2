@@ -79,7 +79,7 @@ export const refreshAccessToken = async () => {
       throw new Error(errorData.error);
     }
   } catch (error) {
-    console.error("Error refreshing the access token: ", error);
+    console.error(error);
     throw error;
   }
 };
