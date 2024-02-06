@@ -97,7 +97,6 @@ export const getAllPosts = async () => {
 };
 
 export const SinglePostGet = async (id) => {
-  console.log("Param id: ", id);
   try {
     const searchUrl = `http://localhost:3000/${id}`;
     const response = await fetch(searchUrl);
