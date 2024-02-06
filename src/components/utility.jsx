@@ -10,6 +10,8 @@ const timefromNow = (adjustment) => {
   return date;
 };
 
+const tokenExpiration = timefromNow(600);
+
 export const LoginSubmit = async (email, password) => {
   try {
     const response = await LoginLocal(email, password);
@@ -17,7 +19,8 @@ export const LoginSubmit = async (email, password) => {
     const { token, refreshToken } = response;
 
     if (token || refreshToken) {
-      Cookies.set("accessToken", token, { expires: timefromNow(600) });
+      Cookies.set("accessToken", token, { expires: tokenExpiration });
+      // Cookies.set("accessToken", token, { expires: timefromNow(10) });
 
       Cookies.set("refreshToken", refreshToken);
       return true;
@@ -66,16 +69,16 @@ const checkRefreshTokenStatus = async () => {
 
 export const checkAccessTokenStatus = async () => {
   const accessToken = Cookies.get("accessToken");
-  //   console.log("Access token: ", accessToken);
 
   if (!accessToken) {
     // console.log("no access token found");
     const refreshCheck = await checkRefreshTokenStatus();
+
     if (refreshCheck) {
       try {
         const refreshedAccessToken = await refreshAccessToken();
         Cookies.set("accessToken", refreshedAccessToken.token, {
-          expires: timefromNow(15),
+          expires: tokenExpiration,
         });
         console.log("access token refreshed");
         console.log(refreshedAccessToken.token);
@@ -95,11 +98,11 @@ export const checkAccessTokenStatus = async () => {
   const accessTokenExpiration = decodedAccessToken.exp;
   const currentTime = Math.floor(Date.now() / 1000);
 
-  if (currentTime >= accessTokenExpiration) {
+  if (currentTime >= accessTokenExpiration - 60) {
     try {
       const refreshedAccessToken = await refreshAccessToken();
       Cookies.set("accessToken", refreshedAccessToken.token, {
-        expires: timefromNow(15),
+        expires: tokenExpiration,
       });
       console.log(refreshedAccessToken.token);
       return true;
