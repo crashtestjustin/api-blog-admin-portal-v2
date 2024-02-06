@@ -21,13 +21,15 @@ function Posts() {
 
   useEffect(() => {
     const getAllThePosts = async () => {
-      const allPosts = await getAllPosts();
-      setPosts(allPosts.posts);
+      if (isLoggedIn) {
+        const allPosts = await getAllPosts();
+        setPosts(allPosts.posts);
+      }
     };
     getAllThePosts();
-  }, []);
+  }, [isLoggedIn]);
 
-  console.log(posts);
+  // console.log(posts);
 
   return (
     <>
