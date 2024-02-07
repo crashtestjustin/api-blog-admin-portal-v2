@@ -106,3 +106,72 @@ export const SinglePostGet = async (id) => {
     console.error(`Error fetching data for single post: ${error}`);
   }
 };
+
+export const SinglePostUpdate = async (postid, title, body, published) => {
+  const postBody = {
+    title: title,
+    body: body,
+    published: published,
+  };
+
+  const handleRequest = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/posts/${postid}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${Cookies.get("accessToken")}`,
+        },
+        body: JSON.stringify(postBody),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(`post data updated: ${data}`);
+        return data;
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error);
+      }
+    } catch (error) {
+      console.error(error);
+      throw new Error(`Error updating thhe post: ${error}`);
+    }
+  };
+  return await handleRequest();
+};
+
+export const CommentUpdate = async (commentid, body) => {
+  const commentBody = {
+    body: body,
+  };
+
+  const handleRequest = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/comments/${commentid}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("accessToken")}`,
+          },
+          body: JSON.stringify(commentBody),
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(`post data updated: ${data}`);
+        return data;
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error);
+      }
+    } catch (error) {
+      console.error(error);
+      throw new Error(`Error updating the comment id: ${commentid}: ${error}`);
+    }
+  };
+  return await handleRequest();
+};
