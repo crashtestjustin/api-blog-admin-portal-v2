@@ -4,7 +4,7 @@ import { Home } from "../home/home";
 import styles from "./singlepost.module.css";
 import he from "he";
 import { OutletContext } from "../../App";
-import { SinglePostGet } from "../api";
+import { SinglePostGet, SinglePostUpdate, CommentUpdate } from "../api";
 import { checkAccessTokenStatus } from "../utility";
 
 function Post() {
@@ -66,6 +66,28 @@ function Post() {
     });
   };
 
+  const handleSavePostandComments = async (e) => {
+    e.preventDefault();
+
+    try {
+      const update = await SinglePostUpdate(
+        selectedPost._id,
+        selectedPost.title,
+        selectedPost.body,
+        selectedPost.published
+      );
+
+      //need to add comment updates
+
+      if (update) {
+        console.log("post successfully updated");
+        setEditMode(false);
+      }
+    } catch (error) {
+      console.log(`error updating records: ${error}`);
+    }
+  };
+
   const convertCommentDate = (commentDate) => {
     const comment = commentDate;
     const formattedDate = new Intl.DateTimeFormat("en-us", {
@@ -79,7 +101,9 @@ function Post() {
     return formattedDate;
   };
 
-  // console.log(editMode);
+  useEffect(() => {
+    console.log(selectedPost);
+  }, [selectedPost]);
 
   return (
     <>
@@ -89,7 +113,7 @@ function Post() {
             <>
               {editMode ? (
                 <>
-                  <form method="post">
+                  <form method="post" onSubmit={handleSavePostandComments}>
                     <div className={styles.heading}>
                       <label htmlFor="title">Title:</label>
                       <input
