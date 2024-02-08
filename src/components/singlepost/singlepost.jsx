@@ -70,17 +70,34 @@ function Post() {
     e.preventDefault();
 
     try {
-      const update = await SinglePostUpdate(
+      const postUpdateResult = await SinglePostUpdate(
         selectedPost._id,
         selectedPost.title,
         selectedPost.body,
         selectedPost.published
       );
 
-      //need to add comment updates
+      console.log("post successfully updated");
 
-      if (update) {
-        console.log("post successfully updated");
+      const updateComments = async () => {
+        try {
+          await Promise.all(
+            postComments.map(async (comment) => {
+              await CommentUpdate(comment._id, comment.body);
+            })
+          );
+          console.log("All comments updated successfully.");
+          return true;
+        } catch (error) {
+          console.log(`Error updating the comments databse: ${error}`);
+          throw new Error(error);
+        }
+      };
+
+      const commentUpdateResult = await updateComments();
+
+      if (postUpdateResult && commentUpdateResult) {
+        console.log("post and comments successfully updated");
         setEditMode(false);
       }
     } catch (error) {
