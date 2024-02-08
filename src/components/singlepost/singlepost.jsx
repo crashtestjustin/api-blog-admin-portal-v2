@@ -4,7 +4,12 @@ import { Home } from "../home/home";
 import styles from "./singlepost.module.css";
 import he from "he";
 import { OutletContext } from "../../App";
-import { SinglePostGet, SinglePostUpdate, CommentUpdate } from "../api";
+import {
+  SinglePostGet,
+  SinglePostUpdate,
+  CommentUpdate,
+  CommentDelete,
+} from "../api";
 import { checkAccessTokenStatus } from "../utility";
 
 function Post() {
@@ -34,6 +39,16 @@ function Post() {
     };
     setPostsAndComments();
   }, [postId]);
+
+  useEffect(() => {
+    const updateComments = async () => {
+      const updated = await SinglePostGet(postId);
+      if (updated) {
+        setComments(updated.comments);
+      }
+    };
+    updateComments();
+  }, [postComments]);
 
   const handleCheckboxChange = (e) => {
     console.log("Checkbox checked:", e.target.checked);
@@ -77,8 +92,6 @@ function Post() {
         selectedPost.published
       );
 
-      console.log("post successfully updated");
-
       const updateComments = async () => {
         try {
           await Promise.all(
@@ -86,7 +99,6 @@ function Post() {
               await CommentUpdate(comment._id, comment.body);
             })
           );
-          console.log("All comments updated successfully.");
           return true;
         } catch (error) {
           console.log(`Error updating the comments databse: ${error}`);
@@ -117,10 +129,6 @@ function Post() {
     }).format(new Date(comment));
     return formattedDate;
   };
-
-  useEffect(() => {
-    console.log(selectedPost);
-  }, [selectedPost]);
 
   return (
     <>
@@ -234,9 +242,7 @@ function Post() {
                               <img src="/noun-edit-6537627.svg"></img>
                             </a>
                             <a
-                              onClick={() =>
-                                console.log("delete to be implemented")
-                              }
+                              onClick={() => CommentDelete(postId, comment._id)}
                             >
                               <img src="/noun-trash-3465741.svg"></img>
                             </a>
