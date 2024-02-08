@@ -177,3 +177,21 @@ export const CommentUpdate = async (commentid, body) => {
   };
   return await handleRequest();
 };
+
+export const CommentDelete = async (postid, commentid) => {
+  const response = await fetch(`http://localhost:3000/${postid}/${commentid}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${Cookies.get("accessToken")}`,
+    },
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    console.log(`comment deleted from db: ${data}`);
+    return data;
+  } else {
+    const errorData = await response.json();
+    throw new Error(errorData.error);
+  }
+};
