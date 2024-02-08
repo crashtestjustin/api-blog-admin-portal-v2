@@ -17,6 +17,7 @@ function Post() {
   const [selectedPost, setPost] = useState(null);
   const [postComments, setComments] = useState(null);
   const [editMode, setEditMode] = useState(false);
+  const [commentDeleted, setCommentDeleted] = useState(false);
 
   const { isLoggedIn, setIsLoggedIn } = useContext(OutletContext);
 
@@ -47,8 +48,12 @@ function Post() {
         setComments(updated.comments);
       }
     };
-    updateComments();
-  }, [postComments]);
+    if (commentDeleted) {
+      // Only fetch updated comments if a comment is deleted
+      updateComments();
+      setCommentDeleted(false); // Reset the state variable
+    }
+  }, [commentDeleted, postId]);
 
   const handleCheckboxChange = (e) => {
     console.log("Checkbox checked:", e.target.checked);
@@ -79,6 +84,15 @@ function Post() {
         return comment;
       });
     });
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await CommentDelete(postId, commentId);
+      setCommentDeleted(true); // Trigger effect to fetch updated comments
+    } catch (error) {
+      console.log(`Error deleting comment: ${error}`);
+    }
   };
 
   const handleSavePostandComments = async (e) => {
@@ -241,9 +255,7 @@ function Post() {
                             <a onClick={() => setEditMode(true)}>
                               <img src="/noun-edit-6537627.svg"></img>
                             </a>
-                            <a
-                              onClick={() => CommentDelete(postId, comment._id)}
-                            >
+                            <a onClick={() => handleDeleteComment(comment._id)}>
                               <img src="/noun-trash-3465741.svg"></img>
                             </a>
                             <div className={styles.body}>
