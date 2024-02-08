@@ -135,7 +135,7 @@ export const SinglePostUpdate = async (postid, title, body, published) => {
       }
     } catch (error) {
       console.error(error);
-      throw new Error(`Error updating thhe post: ${error}`);
+      throw new Error(`Error updating the post: ${error}`);
     }
   };
   return await handleRequest();
@@ -170,7 +170,9 @@ export const CommentUpdate = async (commentid, body) => {
       }
     } catch (error) {
       console.error(error);
-      throw new Error(`Error updating the comment id: ${commentid}: ${error}`);
+      throw new Error(
+        `Error updating the comment id: ${commentid}: ${commentBody.body} - ${error}`
+      );
     }
   };
   return await handleRequest();
