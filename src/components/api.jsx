@@ -240,3 +240,36 @@ export const UpdateBio = async (bioId, name, bio) => {
   };
   return await handleRequest();
 };
+
+export async function CreateNewPost(title, body, published) {
+  const requestBody = {
+    title: title,
+    body: body,
+    published: published,
+  };
+
+  const handleRequest = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${Cookies.get("accessToken")}`,
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error creating blog post");
+      }
+    } catch (error) {
+      console.error(`Error creating post: ${error}`);
+      throw error;
+    }
+  };
+  return await handleRequest();
+}
