@@ -1,3 +1,5 @@
 Next steps
 
-need to create the ability to create and delete posts - where to put this???
+finish setting up the funcitonality for creating a new post
+
+set up the ability to delete a post
