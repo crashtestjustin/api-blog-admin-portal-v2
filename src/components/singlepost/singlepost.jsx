@@ -187,7 +187,9 @@ function Post() {
                       value={he.decode(selectedPost.body)}
                       onChange={handlePostChanges}
                     ></textarea>
-
+                    <div>
+                      <h2>Comments</h2>
+                    </div>
                     <div className={styles.postedComments}>
                       {postComments ? (
                         <>
