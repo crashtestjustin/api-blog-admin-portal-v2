@@ -29,14 +29,17 @@ function Posts() {
     getAllThePosts();
   }, [isLoggedIn]);
 
-  // console.log(posts);
-
   return (
     <>
       {isLoggedIn ? (
         <>
           <div className={styles.header}>
             <h1>Posts</h1>
+          </div>
+          <div className={styles.createNew}>
+            <Link to="/create">
+              <button>Create New Post</button>
+            </Link>
           </div>
           <div className={styles.postsSection}>
             {posts ? (
