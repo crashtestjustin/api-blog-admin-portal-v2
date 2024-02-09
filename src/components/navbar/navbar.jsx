@@ -12,6 +12,11 @@ function NavBar() {
         </div>
         <div className={styles.navLink}>
           <button>
+            <NavLink to="/create">Create New Post</NavLink>
+          </button>
+        </div>
+        <div className={styles.navLink}>
+          <button>
             <NavLink to="/posts">Posts</NavLink>
           </button>
         </div>
