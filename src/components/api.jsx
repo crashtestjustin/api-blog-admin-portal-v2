@@ -195,3 +195,48 @@ export const CommentDelete = async (postid, commentid) => {
     throw new Error(errorData.error);
   }
 };
+
+export async function GetBioDetails() {
+  try {
+    const searchUrl = "http://localhost:3000/users/about";
+    const response = await fetch(searchUrl);
+    const bioData = await response.json();
+    return bioData;
+  } catch (error) {
+    console.error("Error fetching Bio: " + error);
+  }
+}
+
+export const UpdateBio = async (bioId, name, bio) => {
+  const bioBody = {
+    id: bioId,
+    name: name,
+    bio: bio,
+  };
+
+  const handleRequest = async () => {
+    console.log(`passing id ${bioBody.id}`);
+    try {
+      const response = await fetch("http://localhost:3000/users/about/update", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bioBody),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(`post data updated: ${data}`);
+        return data;
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.error);
+      }
+    } catch (error) {
+      console.log("error updating bio: ", error);
+      throw new Error(error);
+    }
+  };
+  return await handleRequest();
+};
