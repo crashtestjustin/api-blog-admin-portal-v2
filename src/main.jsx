@@ -7,6 +7,7 @@ import { Home } from "./components/home/home.jsx";
 import About from "./components/about/about.jsx";
 import Posts from "./components/posts/posts.jsx";
 import Post from "./components/singlepost/singlepost.jsx";
+import CreatePost from "./components/posts/createPost.jsx";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
       {
         path: "/posts/:postId",
         element: <Post />,
+      },
+      {
+        path: "/create",
+        element: <CreatePost />,
       },
     ],
   },
