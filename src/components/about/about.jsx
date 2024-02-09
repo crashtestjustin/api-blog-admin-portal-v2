@@ -32,7 +32,6 @@ function About() {
       ...prevData,
       [name]: value,
     }));
-    console.log(name, value);
   };
 
   const submitBioChanges = async (e) => {
@@ -44,7 +43,6 @@ function About() {
       const bioUpdate = await UpdateBio(bio._id, bio.name, bio.bio);
 
       if (bioUpdate) {
-        console.log("bio updated");
         setEditMode(false);
       }
     } catch (error) {
@@ -85,8 +83,11 @@ function About() {
             </>
           ) : (
             <>
-              <p>default view here</p>
               <button onClick={() => setEditMode(true)}>editMode</button>
+              <div className="bioHeader">
+                <h3>So who is {bio.name}?</h3>
+              </div>
+              <div className="bioContent">{bio.bio}</div>
             </>
           )}
         </>
