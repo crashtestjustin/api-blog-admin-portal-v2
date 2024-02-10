@@ -6,6 +6,7 @@ export async function LoginLocal(email, password) {
     password: password,
   };
 
+  //login actions
   const handleLogin = async () => {
     try {
       const response = await fetch("http://localhost:3000/users/login", {
@@ -79,6 +80,7 @@ export const refreshAccessToken = async () => {
   }
 };
 
+//post get actions
 export const getAllPosts = async () => {
   try {
     const response = await fetch("http://localhost:3000/");
@@ -107,6 +109,7 @@ export const SinglePostGet = async (id) => {
   }
 };
 
+//post update actions
 export const SinglePostUpdate = async (postid, title, body, published) => {
   const postBody = {
     title: title,
@@ -178,6 +181,8 @@ export const CommentUpdate = async (commentid, body) => {
   return await handleRequest();
 };
 
+//comment delete action
+
 export const CommentDelete = async (postid, commentid) => {
   const response = await fetch(`http://localhost:3000/${postid}/${commentid}`, {
     method: "DELETE",
@@ -196,6 +201,7 @@ export const CommentDelete = async (postid, commentid) => {
   }
 };
 
+//bio actions
 export async function GetBioDetails() {
   try {
     const searchUrl = "http://localhost:3000/users/about";
@@ -241,6 +247,7 @@ export const UpdateBio = async (bioId, name, bio) => {
   return await handleRequest();
 };
 
+//new post creation action
 export async function CreateNewPost(title, body, published) {
   const requestBody = {
     title: title,
@@ -272,4 +279,28 @@ export async function CreateNewPost(title, body, published) {
     }
   };
   return await handleRequest();
+}
+
+export async function DeletePost(postid) {
+  try {
+    console.log(postid);
+    const response = await fetch(`http://localhost:3000/${postid}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("accessToken")}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Error deleting blog post");
+    }
+  } catch (error) {
+    console.log("Error removing post ", postid, error);
+    throw error;
+  }
 }
