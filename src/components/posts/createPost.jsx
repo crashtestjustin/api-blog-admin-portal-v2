@@ -75,7 +75,7 @@ function CreatePost() {
               />
               <div className={styles.publishModifier}>
                 <label htmlFor="published">
-                  Do you want to publosh this post once created?
+                  Do you want to publish this post once created?
                 </label>
                 <input
                   type="checkbox"
