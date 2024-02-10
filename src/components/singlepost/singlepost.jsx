@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Home } from "../home/home";
 import styles from "./singlepost.module.css";
 import he from "he";
@@ -9,6 +9,7 @@ import {
   SinglePostUpdate,
   CommentUpdate,
   CommentDelete,
+  DeletePost,
 } from "../api";
 import { checkAccessTokenStatus } from "../utility";
 
@@ -20,6 +21,7 @@ function Post() {
   const [commentDeleted, setCommentDeleted] = useState(false);
 
   const { isLoggedIn, setIsLoggedIn } = useContext(OutletContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkTokenStatus = async () => {
@@ -131,6 +133,23 @@ function Post() {
     }
   };
 
+  const handlePostDelete = async () => {
+    try {
+      const postDeleteResult = await DeletePost(postId);
+
+      if (postDeleteResult) {
+        console.log(postDeleteResult);
+        navigate("/posts");
+      } else {
+        console.error(`Unexpected status code: ${postDeleteResult.status}`);
+        throw new Error(postDeleteResult);
+      }
+    } catch (error) {
+      console.error(`Error deleting the post: ${error}`);
+      throw new Error(error);
+    }
+  };
+
   const convertCommentDate = (commentDate) => {
     const comment = commentDate;
     const formattedDate = new Intl.DateTimeFormat("en-us", {
@@ -191,7 +210,7 @@ function Post() {
                       <h2>Comments</h2>
                     </div>
                     <div className={styles.postedComments}>
-                      {postComments ? (
+                      {postComments.length > 0 ? (
                         <>
                           {postComments.map((comment) => (
                             <div key={comment._id} className={styles.comment}>
@@ -225,6 +244,14 @@ function Post() {
                       <button onClick={() => setEditMode(false)}>Cancel</button>
                     </div>
                   </form>
+                  <div className={styles.deleteBtnHolder}>
+                    <button
+                      className={styles.deleteBtn}
+                      onClick={handlePostDelete}
+                    >
+                      Delete Post
+                    </button>
+                  </div>
                 </>
               ) : (
                 <>
@@ -243,8 +270,11 @@ function Post() {
                     </div>
                   </div>
                   <p>{he.decode(selectedPost.body)}</p>
+                  <div>
+                    <h2>Comments</h2>
+                  </div>
                   <div className={styles.postedComments}>
-                    {postComments ? (
+                    {postComments.length > 0 ? (
                       <>
                         {postComments.map((comment) => (
                           <div key={comment._id} className={styles.comment}>
