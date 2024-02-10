@@ -1,12 +1,13 @@
 import styles from "./createpost.module.css";
 import { useEffect, useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { OutletContext } from "../../App";
 import { checkAccessTokenStatus } from "../utility";
 import { Home } from "../home/home";
 import { CreateNewPost } from "../api";
 
 function CreatePost() {
+  const navigate = useNavigate();
   const { isLoggedIn, setIsLoggedIn } = useContext(OutletContext);
   const [postContent, setPost] = useState({
     title: "",
@@ -24,7 +25,6 @@ function CreatePost() {
   }, []);
 
   const handleCheckboxChange = (e) => {
-    console.log("Checkbox checked:", e.target.checked);
     const { name, checked } = e.target;
     setPost((prevData) => ({
       ...prevData,
@@ -40,11 +40,31 @@ function CreatePost() {
     }));
   };
 
+  const submitPostCreate = async (e) => {
+    e.preventDefault();
+
+    try {
+      const postCreationResult = await CreateNewPost(
+        postContent.title,
+        postContent.body,
+        postContent.published
+      );
+
+      if (postCreationResult) {
+        const postId = postCreationResult._id;
+
+        navigate(`/posts/${postId}`);
+      }
+    } catch (error) {
+      console.error("Error creating post: ", error);
+    }
+  };
+
   return (
     <>
       {isLoggedIn ? (
         <>
-          <form method="post">
+          <form method="post" onSubmit={submitPostCreate}>
             <div className={styles.heading}>
               <label htmlFor="title">Title:</label>
               <input
