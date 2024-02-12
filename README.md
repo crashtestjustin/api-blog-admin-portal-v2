@@ -1,6 +1,6 @@
 Next steps
 
-set up the ability to delete a post
+set up the delete post buttons where needed
 
 try adding rich text ediitng to the format
 
