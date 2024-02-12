@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { Home } from "../home/home";
 import styles from "./singlepost.module.css";
 import he from "he";
@@ -12,13 +12,20 @@ import {
   DeletePost,
 } from "../api";
 import { checkAccessTokenStatus } from "../utility";
+import Modal from "./deletemodal";
 
 function Post() {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const setedittrue = queryParams.get("setedittrue");
   const { postId } = useParams();
   const [selectedPost, setPost] = useState(null);
   const [postComments, setComments] = useState(null);
-  const [editMode, setEditMode] = useState(false);
+  const [editMode, setEditMode] = useState(
+    setedittrue === "true" ? true : false
+  );
   const [commentDeleted, setCommentDeleted] = useState(false);
+  const [modalState, setModalState] = useState(false);
 
   const { isLoggedIn, setIsLoggedIn } = useContext(OutletContext);
   const navigate = useNavigate();
@@ -126,7 +133,8 @@ function Post() {
 
       if (postUpdateResult && commentUpdateResult) {
         console.log("post and comments successfully updated");
-        setEditMode(false);
+        // setEditMode(false);
+        handleCancelEdit();
       }
     } catch (error) {
       console.log(`error updating records: ${error}`);
@@ -148,6 +156,20 @@ function Post() {
       console.error(`Error deleting the post: ${error}`);
       throw new Error(error);
     }
+  };
+
+  const handleCancelEdit = () => {
+    setEditMode(false);
+    const queryParams = new URLSearchParams(location.search);
+    queryParams.delete("setedittrue");
+
+    navigate(`${queryParams}`, {
+      replace: true,
+    });
+  };
+
+  const handleDeleteModal = () => {
+    setModalState(!modalState);
   };
 
   const convertCommentDate = (commentDate) => {
@@ -241,16 +263,32 @@ function Post() {
                     </div>
                     <div className={styles.submitArea}>
                       <button type="submit">Save</button>
-                      <button onClick={() => setEditMode(false)}>Cancel</button>
+                      <button onClick={handleCancelEdit}>Cancel</button>
                     </div>
                   </form>
                   <div className={styles.deleteBtnHolder}>
                     <button
                       className={styles.deleteBtn}
-                      onClick={handlePostDelete}
+                      // onClick={handlePostDelete}
+                      onClick={() => setModalState(true)}
                     >
                       Delete Post
                     </button>
+                    <Modal
+                      openModal={modalState}
+                      closeModal={() => setModalState(false)}
+                    >
+                      <p> Are you sure you want to delete the post?</p>
+                      <button
+                        className={styles.deleteBtn}
+                        onClick={handlePostDelete}
+                      >
+                        Delete
+                      </button>
+                      <button onClick={() => setModalState(false)}>
+                        Cancel
+                      </button>
+                    </Modal>
                   </div>
                 </>
               ) : (
