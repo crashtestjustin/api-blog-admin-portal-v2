@@ -44,22 +44,36 @@ function Posts() {
           <div className={styles.postsSection}>
             {posts ? (
               posts.map((post) => (
-                <Link to={`/posts/${post._id}`} key={post._id}>
-                  <div className={styles.post}>
-                    <div className={styles.title}>
-                      <h3>{post.title}</h3>
+                <>
+                  <Link to={`/posts/${post._id}`} key={post._id}>
+                    <div className={styles.post}>
+                      <div className={styles.title}>
+                        <h3>{post.title}</h3>
+                      </div>
+                      <div className={styles.postStatus}>
+                        <p>
+                          Status:{" "}
+                          {post.published === false
+                            ? "Unpublished"
+                            : "Published"}
+                        </p>
+                      </div>
+                      <div className={styles.body}>
+                        <p>{post.body}</p>
+                      </div>
                     </div>
-                    <div className={styles.postStatus}>
-                      <p>
-                        Status:{" "}
-                        {post.published === false ? "Unpublished" : "Published"}
-                      </p>
-                    </div>
-                    <div className={styles.body}>
-                      <p>{post.body}</p>
-                    </div>
+                  </Link>
+                  <div className={styles.modfyBtns}>
+                    <Link
+                      to={{
+                        pathname: `/posts/${post._id}`,
+                        search: `?setedittrue=true`,
+                      }}
+                    >
+                      <button>Edit</button>
+                    </Link>
                   </div>
-                </Link>
+                </>
               ))
             ) : (
               <p>No posts found</p>
