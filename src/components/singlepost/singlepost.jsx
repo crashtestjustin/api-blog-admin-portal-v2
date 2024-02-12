@@ -168,10 +168,6 @@ function Post() {
     });
   };
 
-  const handleDeleteModal = () => {
-    setModalState(!modalState);
-  };
-
   const convertCommentDate = (commentDate) => {
     const comment = commentDate;
     const formattedDate = new Intl.DateTimeFormat("en-us", {
