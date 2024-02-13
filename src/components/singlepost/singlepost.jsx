@@ -85,10 +85,6 @@ function Post() {
     }));
   };
 
-  useEffect(() => {
-    console.log(selectedPost);
-  }, [selectedPost]);
-
   const handleCommentChanges = (e, commentId) => {
     const { name, value } = e.target;
     setComments((prevComments) => {
