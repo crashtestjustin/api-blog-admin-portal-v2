@@ -5,6 +5,7 @@ import { OutletContext } from "../../App";
 import { checkAccessTokenStatus } from "../utility";
 import { Home } from "../home/home";
 import { CreateNewPost } from "../api";
+import ReactQuill from "react-quill";
 
 function CreatePost() {
   const navigate = useNavigate();
@@ -32,8 +33,8 @@ function CreatePost() {
     }));
   };
 
-  const handlePostChanges = (e) => {
-    const { name, value } = e.target;
+  const handlePostChanges = (name, value) => {
+    // const { name, value } = e.target;
     setPost((prevData) => ({
       ...prevData,
       [name]: value,
@@ -71,7 +72,7 @@ function CreatePost() {
                 name="title"
                 id="title"
                 value={postContent.title}
-                onChange={handlePostChanges}
+                onChange={(e) => handlePostChanges("title", e.target.value)}
               />
               <div className={styles.publishModifier}>
                 <label htmlFor="published">
@@ -92,12 +93,19 @@ function CreatePost() {
               </div>
             </div>
             <label htmlFor="body">Post Body:</label>
-            <textarea
+            {/* <textarea
               name="body"
               id="body"
               value={postContent.body}
               onChange={handlePostChanges}
-            ></textarea>
+            ></textarea> */}
+            <ReactQuill
+              theme="snow"
+              name="body"
+              id="body"
+              value={postContent.body || ""}
+              onChange={(value) => handlePostChanges("body", value)}
+            />
             <div className={styles.submitButtons}>
               <button>Create</button>
               <Link to={"/posts"}>
