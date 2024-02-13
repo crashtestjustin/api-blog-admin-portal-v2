@@ -13,6 +13,8 @@ import {
 } from "../api";
 import { checkAccessTokenStatus } from "../utility";
 import Modal from "./deletemodal";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 function Post() {
   const location = useLocation();
@@ -67,19 +69,25 @@ function Post() {
   const handleCheckboxChange = (e) => {
     console.log("Checkbox checked:", e.target.checked);
     const { name, checked } = e.target;
-    setPost((prevData) => ({
-      ...prevData,
-      [name]: checked,
-    }));
+    if (name === "published") {
+      setPost((prevData) => ({
+        ...prevData,
+        [name]: checked,
+      }));
+    }
   };
 
-  const handlePostChanges = (e) => {
-    const { name, value } = e.target;
+  const handlePostChanges = (name, value) => {
+    // const { name, value } = e.target;
     setPost((prevData) => ({
       ...prevData,
       [name]: value,
     }));
   };
+
+  useEffect(() => {
+    console.log(selectedPost);
+  }, [selectedPost]);
 
   const handleCommentChanges = (e, commentId) => {
     const { name, value } = e.target;
@@ -196,7 +204,9 @@ function Post() {
                         name="title"
                         id="title"
                         value={selectedPost.title}
-                        onChange={handlePostChanges}
+                        onChange={(e) =>
+                          handlePostChanges("title", e.target.value)
+                        }
                       />
                       <div className={styles.publishModifier}>
                         <label htmlFor="published">
@@ -218,12 +228,13 @@ function Post() {
                       </div>
                     </div>
                     <label htmlFor="body">Post Body:</label>
-                    <textarea
+                    <ReactQuill
+                      theme="snow"
                       name="body"
                       id="body"
-                      value={he.decode(selectedPost.body)}
-                      onChange={handlePostChanges}
-                    ></textarea>
+                      value={he.decode(selectedPost.body) || ""}
+                      onChange={(value) => handlePostChanges("body", value)}
+                    />
                     <div>
                       <h2>Comments</h2>
                     </div>
@@ -303,7 +314,11 @@ function Post() {
                       </p>
                     </div>
                   </div>
-                  <p>{he.decode(selectedPost.body)}</p>
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: he.decode(selectedPost.body),
+                    }}
+                  ></div>
                   <div>
                     <h2>Comments</h2>
                   </div>
