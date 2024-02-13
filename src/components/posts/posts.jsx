@@ -5,6 +5,7 @@ import { checkAccessTokenStatus } from "../utility";
 import { Link } from "react-router-dom";
 import { getAllPosts } from "../api";
 import styles from "./posts.module.css";
+import he from "he";
 
 function Posts() {
   const { isLoggedIn, setIsLoggedIn } = useContext(OutletContext);
@@ -44,8 +45,8 @@ function Posts() {
           <div className={styles.postsSection}>
             {posts ? (
               posts.map((post) => (
-                <>
-                  <Link to={`/posts/${post._id}`} key={post._id}>
+                <div key={post._id} className={styles.postBlock}>
+                  <Link to={`/posts/${post._id}`}>
                     <div className={styles.post}>
                       <div className={styles.title}>
                         <h3>{post.title}</h3>
@@ -58,9 +59,12 @@ function Posts() {
                             : "Published"}
                         </p>
                       </div>
-                      <div className={styles.body}>
-                        <p>{post.body}</p>
-                      </div>
+                      <div
+                        className={styles.body}
+                        dangerouslySetInnerHTML={{
+                          __html: he.decode(post.body),
+                        }}
+                      />
                     </div>
                   </Link>
                   <div className={styles.modfyBtns}>
@@ -73,7 +77,7 @@ function Posts() {
                       <button>Edit</button>
                     </Link>
                   </div>
-                </>
+                </div>
               ))
             ) : (
               <p>No posts found</p>
