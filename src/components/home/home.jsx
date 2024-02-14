@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import Modal from "./loginModal";
 import { LoginSubmit, LogoutSubmit, checkAccessTokenStatus } from "../utility";
 import { OutletContext } from "../../App";
+import styles from "./home.module.css";
 
 export const Home = () => {
   const [modalState, setModalState] = useState(false);
@@ -33,7 +34,8 @@ export const Home = () => {
     }));
   };
 
-  const handleLoginModal = () => {
+  const handleLoginModal = (e) => {
+    e.preventDefault();
     setModalState(!modalState);
   };
 
@@ -75,24 +77,30 @@ export const Home = () => {
           <p>Please login to proceed:</p>
           <button onClick={() => setModalState(true)}>Login</button>
           <Modal openModal={modalState} closeModal={() => setModalState(false)}>
-            <form onSubmit={hanldeLoginSubmit}>
-              <label>Email:</label>
-              <input
-                type="text"
-                name="email"
-                value={loginData.email}
-                onChange={handleLoginInputchange}
-              />
-              <label>Pasword:</label>
-              <input
-                type="password"
-                name="password"
-                value={loginData.password}
-                onChange={handleLoginInputchange}
-              />
-              <button type="submit">Login</button>
-            </form>
-            <button onClick={handleLoginModal}>Close</button>
+            <div className={styles.modalDiv}>
+              <form onSubmit={hanldeLoginSubmit}>
+                <div className={styles.formSection}>
+                  <label>Email:</label>
+                  <input
+                    type="text"
+                    name="email"
+                    value={loginData.email}
+                    onChange={handleLoginInputchange}
+                  />
+                </div>
+                <div className={styles.formSection}>
+                  <label>Pasword:</label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={loginData.password}
+                    onChange={handleLoginInputchange}
+                  />
+                </div>
+                <button type="submit">Login</button>
+                <button onClick={handleLoginModal}>Close</button>
+              </form>
+            </div>
           </Modal>
           <br></br>
           <button onClick={checkAccessTokenStatus}>
