@@ -62,7 +62,7 @@ function Posts() {
                       <div
                         className={styles.body}
                         dangerouslySetInnerHTML={{
-                          __html: he.decode(post.body),
+                          __html: he.decode(`${post.body.substring(0, 85)}...`),
                         }}
                       />
                     </div>
@@ -74,7 +74,10 @@ function Posts() {
                         search: `?setedittrue=true`,
                       }}
                     >
-                      <button>Edit</button>
+                      <img
+                        className={styles.postsEditImg}
+                        src="public/noun-edit-6537627.svg"
+                      />
                     </Link>
                   </div>
                 </div>
