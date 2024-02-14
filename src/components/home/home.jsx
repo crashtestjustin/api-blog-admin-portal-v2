@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Modal from "./loginModal";
 import { LoginSubmit, LogoutSubmit, checkAccessTokenStatus } from "../utility";
 import { OutletContext } from "../../App";
@@ -44,7 +45,7 @@ export const Home = () => {
 
     try {
       await LoginSubmit(loginData.email, loginData.password);
-      handleLoginModal();
+      setModalState(!modalState);
       setIsLoggedIn(true);
     } catch (error) {
       console.error(`Login failed: ${error.message}`);
@@ -63,15 +64,21 @@ export const Home = () => {
   return (
     <>
       {isLoggedIn ? (
-        <>
+        <div className={styles.content}>
           <h1>Welcome to the admin portal.</h1>
-          <button onClick={handleLogout}>Logout</button>
-          <br></br>
-          <br></br>
-          <button onClick={checkAccessTokenStatus}>
-            Check access Token expiration Test
-          </button>
-        </>
+          <div className={styles.navigationBtns}>
+            <Link to="/create">
+              <button className={styles.homeNav}>Create New Post</button>
+            </Link>
+            <Link to="/posts">
+              <button className={styles.homeNav}>See Current Posts</button>
+            </Link>
+            <Link to="/about">
+              <button className={styles.homeNav}>Modify About Page</button>
+            </Link>
+            <button onClick={handleLogout}>Logout</button>
+          </div>
+        </div>
       ) : (
         <>
           <p>Please login to proceed:</p>
