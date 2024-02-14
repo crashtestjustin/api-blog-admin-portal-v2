@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import styles from "./home.module.css";
 
 function Modal({ openModal, closeModal, children }) {
   const ref = useRef();
@@ -12,7 +13,7 @@ function Modal({ openModal, closeModal, children }) {
   }, [openModal]);
 
   return (
-    <dialog ref={ref} onCancel={closeModal}>
+    <dialog className={styles.modal} ref={ref} onCancel={closeModal}>
       {children}
     </dialog>
   );
