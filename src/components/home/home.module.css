@@ -1,0 +1,23 @@
+.modal {
+  border-radius: 32px;
+  padding: 24px;
+}
+
+.modalDiv form {
+  display: grid;
+  grid-template: repeat(2, 1fr) / repeat(2, 1fr);
+  row-gap: 20px;
+  column-gap: 10px;
+}
+
+form input {
+  padding: 5px;
+  width: 100%;
+  border-radius: 8px;
+}
+
+.formSection {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
