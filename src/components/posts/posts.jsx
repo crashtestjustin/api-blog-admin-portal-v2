@@ -76,7 +76,18 @@ function Posts() {
                     >
                       <img
                         className={styles.postsEditImg}
-                        src="public/noun-edit-6537627.svg"
+                        src="/public/edit.svg"
+                      />
+                    </Link>
+                    <Link
+                      to={{
+                        pathname: `/posts/${post._id}`,
+                        search: `?setedittrue=true&setdeletemodaltrue=true`,
+                      }}
+                    >
+                      <img
+                        className={styles.postsEditImg}
+                        src="/public/trash.svg"
                       />
                     </Link>
                   </div>
