@@ -1,6 +1,7 @@
 .modal {
   border-radius: 32px;
   padding: 24px;
+  width: 50%;
 }
 
 .modalDiv form {
@@ -20,6 +21,15 @@ form input {
   display: flex;
   align-items: center;
   gap: 5px;
+}
+
+form button {
+  width: 70%;
+  justify-self: flex-start;
+}
+
+form button:first-of-type {
+  justify-self: flex-end;
 }
 
 .content {
