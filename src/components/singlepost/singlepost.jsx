@@ -20,6 +20,7 @@ function Post() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const setedittrue = queryParams.get("setedittrue");
+  const setdeletemodaltrue = queryParams.get("setdeletemodaltrue");
   const { postId } = useParams();
   const [selectedPost, setPost] = useState(null);
   const [postComments, setComments] = useState(null);
@@ -27,7 +28,9 @@ function Post() {
     setedittrue === "true" ? true : false
   );
   const [commentDeleted, setCommentDeleted] = useState(false);
-  const [modalState, setModalState] = useState(false);
+  const [modalState, setModalState] = useState(
+    setdeletemodaltrue === "true" ? true : false
+  );
 
   const { isLoggedIn, setIsLoggedIn } = useContext(OutletContext);
   const navigate = useNavigate();
@@ -166,6 +169,7 @@ function Post() {
     setEditMode(false);
     const queryParams = new URLSearchParams(location.search);
     queryParams.delete("setedittrue");
+    queryParams.delete("setdeletemodaltrue");
 
     navigate(`${queryParams}`, {
       replace: true,
@@ -299,7 +303,8 @@ function Post() {
                   <div className={styles.heading}>
                     <h1>{selectedPost.title}</h1>
                     <a onClick={() => setEditMode(true)}>
-                      <img src="/noun-edit-6537627.svg"></img>
+                      {/* <img src="/noun-edit-6537627.svg"></img> */}
+                      <img src="/public/edit.svg"></img>
                     </a>
                     <div className={styles.status}>
                       <p>
@@ -330,10 +335,12 @@ function Post() {
                               {convertCommentDate(comment.date)}
                             </div>
                             <a onClick={() => setEditMode(true)}>
-                              <img src="/noun-edit-6537627.svg"></img>
+                              {/* <img src="/noun-edit-6537627.svg"></img> */}
+                              <img src="/public/edit.svg"></img>
                             </a>
                             <a onClick={() => handleDeleteComment(comment._id)}>
-                              <img src="/noun-trash-3465741.svg"></img>
+                              {/* <img src="/noun-trash-3465741.svg"></img> */}
+                              <img src="/trash.svg"></img>
                             </a>
                             <div className={styles.body}>
                               {he.decode(comment.body)}
