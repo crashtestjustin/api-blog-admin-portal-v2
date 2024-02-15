@@ -199,19 +199,20 @@ function Post() {
                 <>
                   <form method="post" onSubmit={handleSavePostandComments}>
                     <div className={styles.heading}>
-                      <label htmlFor="title">Title:</label>
-                      <input
-                        name="title"
-                        id="title"
-                        value={selectedPost.title}
-                        onChange={(e) =>
-                          handlePostChanges("title", e.target.value)
-                        }
-                      />
+                      <div className={styles.postTitle}>
+                        <label htmlFor="title">Title:</label>
+                        <input
+                          name="title"
+                          id="title"
+                          value={selectedPost.title}
+                          onChange={(e) =>
+                            handlePostChanges("title", e.target.value)
+                          }
+                        />
+                      </div>
                       <div className={styles.publishModifier}>
                         <label htmlFor="published">
-                          Select to publish the post (changes upon saving the
-                          page):
+                          Select to publish the post:
                         </label>
                         <input
                           type="checkbox"
@@ -222,51 +223,62 @@ function Post() {
                         />
                         <p>
                           {selectedPost.published === true
-                            ? "Will  be Published"
-                            : "Will be Unpublished"}
+                            ? "Will  be Published upon saving"
+                            : "Will be Unpublished upon saving"}
                         </p>
                       </div>
                     </div>
-                    <label htmlFor="body">Post Body:</label>
-                    <ReactQuill
-                      theme="snow"
-                      name="body"
-                      id="body"
-                      value={he.decode(selectedPost.body) || ""}
-                      onChange={(value) => handlePostChanges("body", value)}
-                    />
-                    <div>
-                      <h2>Comments</h2>
-                    </div>
-                    <div className={styles.postedComments}>
-                      {postComments.length > 0 ? (
-                        <>
-                          {postComments.map((comment) => (
-                            <div key={comment._id} className={styles.comment}>
-                              <div className={styles.username}>
-                                {comment.username} |
-                              </div>
-                              <div className={styles.datePosted}>
-                                {convertCommentDate(comment.date)}
-                              </div>
-                              <label hidden htmlFor={`body-${comment._id}`}>
-                                Comment Body:
-                              </label>
-                              <textarea
-                                id={`body-${comment._id}`}
-                                name="body"
-                                value={he.decode(comment.body)}
-                                className={styles.body}
-                                onChange={(e) =>
-                                  handleCommentChanges(e, comment._id)
-                                }
-                              />
-                            </div>
-                          ))}
-                        </>
-                      ) : (
-                        <p>No comments yet</p>
-                      )}
+                    <div className={styles.contentContainer}>
+                      <div className={styles.bodySection}>
+                        <label htmlFor="body" hidden>
+                          Post Body:
+                        </label>
+                        <ReactQuill
+                          className={styles.quillEditor}
+                          theme="snow"
+                          name="body"
+                          id="body"
+                          value={he.decode(selectedPost.body) || ""}
+                          onChange={(value) => handlePostChanges("body", value)}
+                        />
+                      </div>
+                      <div className={styles.commentSection}>
+                        <h2>Comments</h2>
+                        <div className={styles.postedComments}>
+                          {postComments.length > 0 ? (
+                            <>
+                              {postComments.map((comment) => (
+                                <div
+                                  key={comment._id}
+                                  className={styles.comment}
+                                >
+                                  <div className={styles.username}>
+                                    <strong>{comment.username}</strong> |{" "}
+                                    <em>{convertCommentDate(comment.date)}</em>
+                                  </div>
+                                  {/* <div className={styles.datePosted}>
+                                    {convertCommentDate(comment.date)}
+                                  </div> */}
+                                  <label hidden htmlFor={`body-${comment._id}`}>
+                                    Comment Body:
+                                  </label>
+                                  <textarea
+                                    id={`body-${comment._id}`}
+                                    name="body"
+                                    value={he.decode(comment.body)}
+                                    className={styles.commentBody}
+                                    onChange={(e) =>
+                                      handleCommentChanges(e, comment._id)
+                                    }
+                                  />
+                                </div>
+                              ))}
+                            </>
+                          ) : (
+                            <p>No comments yet</p>
+                          )}
+                        </div>
+                      </div>
                     </div>
                     <div className={styles.submitArea}>
                       <button type="submit">Save</button>
@@ -285,16 +297,18 @@ function Post() {
                       openModal={modalState}
                       closeModal={() => setModalState(false)}
                     >
-                      <p> Are you sure you want to delete the post?</p>
-                      <button
-                        className={styles.deleteBtn}
-                        onClick={handlePostDelete}
-                      >
-                        Delete
-                      </button>
-                      <button onClick={() => setModalState(false)}>
-                        Cancel
-                      </button>
+                      <div className={styles.modalDiv}>
+                        <p> Are you sure you want to delete the post?</p>
+                        <button
+                          className={styles.deleteBtn}
+                          onClick={handlePostDelete}
+                        >
+                          Delete
+                        </button>
+                        <button onClick={() => setModalState(false)}>
+                          Cancel
+                        </button>
+                      </div>
                     </Modal>
                   </div>
                 </>
@@ -308,10 +322,12 @@ function Post() {
                     </a>
                     <div className={styles.status}>
                       <p>
-                        Status:{" "}
-                        {selectedPost.published === true
-                          ? "Published"
-                          : "Unpublished"}
+                        <strong>Status: </strong>
+                        <em>
+                          {selectedPost.published === true
+                            ? "Published"
+                            : "Unpublished"}
+                        </em>
                       </p>
                     </div>
                   </div>
@@ -320,37 +336,40 @@ function Post() {
                       __html: he.decode(selectedPost.body),
                     }}
                   ></div>
-                  <div>
+                  <div className={styles.commentSection}>
                     <h2>Comments</h2>
-                  </div>
-                  <div className={styles.postedComments}>
-                    {postComments.length > 0 ? (
-                      <>
-                        {postComments.map((comment) => (
-                          <div key={comment._id} className={styles.comment}>
-                            <div className={styles.username}>
-                              {comment.username} |
+                    <div className={styles.postedComments}>
+                      {postComments.length > 0 ? (
+                        <>
+                          {postComments.map((comment) => (
+                            <div
+                              key={comment._id}
+                              className={styles.readComment}
+                            >
+                              <div className={styles.username}>
+                                <strong>{comment.username}</strong> |{" "}
+                                <em>{convertCommentDate(comment.date)}</em>
+                              </div>
+                              <a onClick={() => setEditMode(true)}>
+                                {/* <img src="/noun-edit-6537627.svg"></img> */}
+                                <img src="/public/edit.svg"></img>
+                              </a>
+                              <a
+                                onClick={() => handleDeleteComment(comment._id)}
+                              >
+                                {/* <img src="/noun-trash-3465741.svg"></img> */}
+                                <img src="/trash.svg"></img>
+                              </a>
+                              <p className={styles.commentBody}>
+                                {he.decode(comment.body)}
+                              </p>
                             </div>
-                            <div className={styles.datePosted}>
-                              {convertCommentDate(comment.date)}
-                            </div>
-                            <a onClick={() => setEditMode(true)}>
-                              {/* <img src="/noun-edit-6537627.svg"></img> */}
-                              <img src="/public/edit.svg"></img>
-                            </a>
-                            <a onClick={() => handleDeleteComment(comment._id)}>
-                              {/* <img src="/noun-trash-3465741.svg"></img> */}
-                              <img src="/trash.svg"></img>
-                            </a>
-                            <div className={styles.body}>
-                              {he.decode(comment.body)}
-                            </div>
-                          </div>
-                        ))}
-                      </>
-                    ) : (
-                      <p>No comments yet</p>
-                    )}
+                          ))}
+                        </>
+                      ) : (
+                        <p>No comments yet</p>
+                      )}
+                    </div>
                   </div>
                 </>
               )}
