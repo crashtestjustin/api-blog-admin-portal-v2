@@ -3,6 +3,7 @@ import { OutletContext } from "../../App";
 import { Home } from "../home/home";
 import { checkAccessTokenStatus } from "../utility";
 import { GetBioDetails, UpdateBio } from "../api";
+import styles from "./about.module.css";
 
 function About() {
   const [bioloaded, setBioLoaded] = useState(false);
@@ -55,40 +56,54 @@ function About() {
     <>
       {isLoggedIn ? (
         <>
+          <h1>About Page</h1>
           {editMode ? (
-            <>
-              <p>About editor go here</p>
+            <div className={styles.aboutPage}>
               <form method="post" onSubmit={submitBioChanges}>
-                <input type="text" value={bio ? bio._id : ""} hidden readOnly />
-                <div className="bioName">
+                <div className={styles.aboutForm}>
                   <input
                     type="text"
-                    name="name"
-                    onChange={handleBioChanges}
-                    value={bio ? bio.name : ""}
+                    value={bio ? bio._id : ""}
+                    hidden
+                    readOnly
                   />
-                </div>
-                <div className="bio">
-                  <textarea
-                    name="bio"
-                    value={bio ? bio.bio : ""}
-                    onChange={handleBioChanges}
-                  />
-                </div>
-                <div className="formSubmit">
-                  <button>Save</button>
-                  <button onClick={() => setEditMode(false)}>Cancel</button>
+                  <div className="bioName">
+                    <input
+                      type="text"
+                      name="name"
+                      onChange={handleBioChanges}
+                      value={bio ? bio.name : ""}
+                    />
+                  </div>
+                  <div className="bio">
+                    <textarea
+                      name="bio"
+                      value={bio ? bio.bio : ""}
+                      onChange={handleBioChanges}
+                    />
+                  </div>
+                  <div className={styles.formSubmit}>
+                    <button>Save</button>
+                    <button onClick={() => setEditMode(false)}>Cancel</button>
+                  </div>
                 </div>
               </form>
-            </>
+            </div>
           ) : (
-            <>
-              <button onClick={() => setEditMode(true)}>editMode</button>
-              <div className="bioHeader">
+            <div className={styles.aboutPage}>
+              <button
+                className={styles.activateEditBtn}
+                onClick={() => setEditMode(true)}
+              >
+                editMode
+              </button>
+              <div className={styles.bioHeader}>
                 <h3>So who is {bio.name}?</h3>
               </div>
-              <div className="bioContent">{bio.bio}</div>
-            </>
+              <div className={styles.bioContent}>
+                <p>{bio.bio}</p>
+              </div>
+            </div>
           )}
         </>
       ) : (
