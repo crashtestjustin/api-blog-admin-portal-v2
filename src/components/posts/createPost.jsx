@@ -65,7 +65,11 @@ function CreatePost() {
     <>
       {isLoggedIn ? (
         <>
-          <form method="post" onSubmit={submitPostCreate}>
+          <form
+            className={styles.newPostForm}
+            method="post"
+            onSubmit={submitPostCreate}
+          >
             <div className={styles.heading}>
               <label htmlFor="title">Title:</label>
               <input
@@ -92,7 +96,9 @@ function CreatePost() {
                 </p>
               </div>
             </div>
-            <label htmlFor="body">Post Body:</label>
+            <label hidden htmlFor="body">
+              Post Body:
+            </label>
             {/* <textarea
               name="body"
               id="body"
@@ -100,6 +106,7 @@ function CreatePost() {
               onChange={handlePostChanges}
             ></textarea> */}
             <ReactQuill
+              className={styles.quillEditor}
               theme="snow"
               name="body"
               id="body"
