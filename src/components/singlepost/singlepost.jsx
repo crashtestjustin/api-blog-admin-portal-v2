@@ -352,7 +352,7 @@ function Post() {
                               </div>
                               <a onClick={() => setEditMode(true)}>
                                 {/* <img src="/noun-edit-6537627.svg"></img> */}
-                                <img src="/public/edit.svg"></img>
+                                <img src="/edit.svg"></img>
                               </a>
                               <a
                                 onClick={() => handleDeleteComment(comment._id)}
